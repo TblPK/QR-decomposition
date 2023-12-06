@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Decomposition</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <h1>QR Decomposition</h1>
+    <form>
+        <label for="matrixSize">Matrix size N:</label>
+        <input type="text" id="matrixSize" />
+        <button type="button" onclick="generateEmptyTable()">Generate Empty Table</button>
+        <button type="button" onclick="generateRandomTable()">Generate Random Table</button>
+        <button type="button" onclick="performQRDecomposition()">QR Decomposition</button>
+    </form>
+
+    <h2>Input Matrix</h2>
+    <table id="inputMatrix"></table>
+
+    <h2>Q Matrix</h2>
+    <table id="qMatrix"></table>
+
+    <h2>R Matrix</h2>
+    <table id="rMatrix"></table>
+
+    <h2>Product Q*R</h2>
+    <table id="qrMatrix"></table>
+
+    <script src="qr-decomposition.js"></script>
+</body>
+
+</html>
