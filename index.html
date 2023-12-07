@@ -6,19 +6,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Decomposition</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+        }
 
+        h1, h2 {
+            color: #004080;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #004080;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px;
+            margin: 10px 5px 0 0;
+            background-color: #004080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #002f5e;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #004080;
+            color: #fff;
+        }
     </style>
 </head>
 
 <body>
     <h1>QR Decomposition</h1>
 
-    <label for="matrixSizeN">Matrix size N:</label>
-    <input type="text" id="matrixSizeN" />
+    <label for="numRows">Matrix rows:</label>
+    <input type="text" id="numRows" value="3" />
     <br>
-    <label for="matrixSizeM">Matrix size M:</label>
-    <input type="text" id="matrixSizeM" />
+    <label for="numColumns">Matrix columns:</label>
+    <input type="text" id="numColumns" value="3" />
     <br>
+
     <button type="button" onclick="generateTable(false)">Generate Empty Table</button>
     <button type="button" onclick="generateTable(true)">Generate Random Table</button>
     <button type="button" onclick="performQRDecomposition()">QR Decomposition</button>

@@ -1,73 +1,74 @@
-function isValidInput(N, M) {
-    return !isNaN(N) && parseInt(N) > 0 && !isNaN(M) && parseInt(M) > 0;
+function isValidInput(rows, columns) {
+    return !isNaN(rows) && parseInt(rows) > 0 && !isNaN(columns) && parseInt(columns) > 0;
 }
 
 function generateTable(isRandom) {
-    const N = document.getElementById('matrixSizeN').value;
-    const M = document.getElementById('matrixSizeM').value;
-    if (!isValidInput(N, M)) {
-        alert('Please enter a valid positive number for N and M.');
+    const numRows = document.getElementById('numRows').value;
+    const numColumns = document.getElementById('numColumns').value;
+
+    if (!isValidInput(numRows, numColumns)) {
+        alert('Please enter a valid positive number for rows and columns.');
         return;
     }
 
     const table = document.getElementById('inputMatrix');
     table.innerHTML = '';
+    const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-    for (let i = 0; i < N; i++) {
+    for (let i = 0; i < numRows; i++) {
         const row = table.insertRow();
-        for (let j = 0; j < M; j++) {
+        for (let j = 0; j < numColumns; j++) {
             const input = document.createElement('input');
             input.type = 'text';
-            if (isRandom) {
-                input.value = Math.floor((Math.random() - 0.5) * 100); // [-50, 50]
-            }
+            if (isRandom) input.value = getRandomInt(-50, 50);
             row.insertCell().appendChild(input);
         }
     }
 }
 
 function performQRDecomposition() {
-    const N = document.getElementById('matrixSizeN').value;
-    const M = document.getElementById('matrixSizeM').value;
-    if (!isValidInput(N, M)) {
-        alert('Please enter a valid positive number for N and M.');
+    const numRows = document.getElementById('numRows').value;
+    const numColumns = document.getElementById('numColumns').value;
+
+    if (!isValidInput(numRows, numColumns)) {
+        alert('Please enter a valid positive number for rows and columns.');
         return;
     }
 
     const inputMatrix = [];
     const table = document.getElementById('inputMatrix');
-    for (let i = 0; i < N; i++) {
+    for (let i = 0; i < numRows; i++) {
         inputMatrix[i] = [];
         const input = table.rows[i].cells;
-        for (let j = 0; j < M; j++) {
-            const el = input[j].querySelector('input').value;
-            inputMatrix[i][j] = parseFloat(el);
+        for (let j = 0; j < numColumns; j++) {
+            const el = input[j].querySelector('input');
+            inputMatrix[i][j] = parseFloat(el.value);
         }
     }
 
-    let [ qMatrix, rMatrix ] = QRGivens(inputMatrix, N, M);
-    let qrMatrix = multiplyMatrices(qMatrix, rMatrix);
+    let [Q, R] = QRGivens(inputMatrix, numRows, numColumns);
+    let QR = multiplyMatrices(Q, R);
 
-    displayMatrix('qMatrix', qMatrix);
-    displayMatrix('rMatrix', rMatrix);
-    displayMatrix('qrMatrix', qrMatrix);
+    displayMatrix('qMatrix', Q);
+    displayMatrix('rMatrix', R);
+    displayMatrix('qrMatrix', QR);
 }
 
-function QRGivens(A, N, M) {
-    let Q = eye(N);
-    let R = A.map(a => ([...a])); // deep copy
+function QRGivens(matrix, numRows, numColumns) {
+    let Q = eye(numRows);
+    let R = matrix.map(row => ([...row]));
 
-    for(let j = 0; j < M - 1; j++) {
-        for (let i = N - 1; i > j; i--) {
-            let G = eye(N);
-            let {c, s} = givensRotation(R[i-1][j], R[i][j]);
+    for (let j = 0; j < numColumns - 1; j++) {
+        for (let i = numRows - 1; i > j; i--) {
+            let G = eye(numRows);
+            let { c, s } = givensRotation(R[i - 1][j], R[i][j]);
             G[i - 1][i - 1] = c;
             G[i - 1][i] = -s;
             G[i][i - 1] = s;
             G[i][i] = c;
-            let tG = G[0].map((_, colIndex) => G.map(row => row[colIndex])); // transpose
-            R = multiplyMatrices(tG, R);
             Q = multiplyMatrices(Q, G);
+            G = G[0].map((_, colIndex) => G.map(row => row[colIndex])); // transpose
+            R = multiplyMatrices(G, R);
         }
     }
 
@@ -77,54 +78,35 @@ function QRGivens(A, N, M) {
 function givensRotation(a, b) {
     let c = 1;
     let s = 0;
-    if (b != 0) {
-        if (Math.abs(b) > Math.abs(a)) {
-            let r = a / b;
-            s = 1 / Math.sqrt(1 + Math.pow(r, 2));
-            c = s * r;
-        } else {
-            let r = b / a;
-            c = 1 / Math.sqrt(1 + Math.pow(r, 2));
-            s = c * r;
-        }
+    if (b !== 0) {
+        let r = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+        c = a / r;
+        s = b / r;
     }
-    return {c, s}
+    return { c, s };
 }
 
-function eye(N) {
-    const identityMatrix = [];
-
-    for (let i = 0; i < N; i++) {
-        identityMatrix[i] = [];
-        for (let j = 0; j < N; j++) {
-            identityMatrix[i][j] = (i == j ? 1 : 0);
-        }
-    }
-
-    return identityMatrix;
+function eye(size) {
+    return Array.from({ length: size }, (_, i) => Array.from({ length: size }, (_, j) => (i === j ? 1 : 0)));
 }
 
-function multiplyMatrices(matrixA, matrixB) {
+function multiplyMatrices(A, B) {
     let result = [];
 
-    if (matrixA[0].length !== matrixB.length) {
-        console.error("Invalid matrix dimensions for multiplication");
-        return result;
-    }
+    if (A[0].length !== B.length) throw new Error("Invalid matrix dimensions for multiplication");
 
-    for (let i = 0; i < matrixA.length; i++) {
+    for (let i = 0; i < A.length; i++) {
         result[i] = [];
-        for (let j = 0; j < matrixB[0].length; j++) {
+        for (let j = 0; j < B[0].length; j++) {
             result[i][j] = 0;
-            for (let k = 0; k < matrixA[0].length; k++) {
-                result[i][j] += matrixA[i][k] * matrixB[k][j];
+            for (let k = 0; k < A[0].length; k++) {
+                result[i][j] += A[i][k] * B[k][j];
             }
         }
     }
 
     return result;
 }
-
 
 function displayMatrix(matrixId, matrix) {
     const table = document.getElementById(matrixId);
@@ -134,7 +116,7 @@ function displayMatrix(matrixId, matrix) {
         const row = table.insertRow();
         for (let j = 0; j < matrix[i].length; j++) {
             const cell = row.insertCell();
-            cell.textContent = matrix[i][j].toFixed(2);
+            cell.textContent = matrix[i][j].toFixed(4);
         }
     }
 }
