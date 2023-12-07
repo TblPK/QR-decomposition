@@ -12,13 +12,16 @@
 
 <body>
     <h1>QR Decomposition</h1>
-    <form>
-        <label for="matrixSize">Matrix size N:</label>
-        <input type="text" id="matrixSize" />
-        <button type="button" onclick="generateEmptyTable()">Generate Empty Table</button>
-        <button type="button" onclick="generateRandomTable()">Generate Random Table</button>
-        <button type="button" onclick="performQRDecomposition()">QR Decomposition</button>
-    </form>
+
+    <label for="matrixSizeN">Matrix size N:</label>
+    <input type="text" id="matrixSizeN" />
+    <br>
+    <label for="matrixSizeM">Matrix size M:</label>
+    <input type="text" id="matrixSizeM" />
+    <br>
+    <button type="button" onclick="generateTable(false)">Generate Empty Table</button>
+    <button type="button" onclick="generateTable(true)">Generate Random Table</button>
+    <button type="button" onclick="performQRDecomposition()">QR Decomposition</button>
 
     <h2>Input Matrix</h2>
     <table id="inputMatrix"></table>
