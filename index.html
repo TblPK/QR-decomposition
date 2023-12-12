@@ -60,6 +60,11 @@
             background-color: #004080;
             color: #fff;
         }
+
+        #error {
+            display: block;
+            color: red;
+        }
     </style>
 </head>
 
@@ -67,18 +72,37 @@
     <h1>QR Decomposition</h1>
 
     <label for="numRows">Matrix rows:</label>
-    <input type="text" id="numRows" value="3" />
+    <input type="number" id="numRows" value="3" oninput="generateTable(true)" />
     <br>
     <label for="numColumns">Matrix columns:</label>
-    <input type="text" id="numColumns" value="3" />
+    <input type="number" id="numColumns" value="3" oninput="generateTable(true)" />
+    <span id="error"></span>
     <br>
 
-    <button type="button" onclick="generateTable(false)">Generate Empty Table</button>
+    <button type="button" onclick="generateTable(false)">Clear table</button>
     <button type="button" onclick="generateTable(true)">Generate Random Table</button>
     <button type="button" onclick="performQRDecomposition()">QR Decomposition</button>
 
     <h2>Input Matrix</h2>
-    <table id="inputMatrix"></table>
+    <table id="inputMatrix">
+        <tbody>
+            <tr>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+            </tr>
+            <tr>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+            </tr>
+            <tr>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+            </tr>
+        </tbody>
+    </table>
 
     <h2>Q Matrix</h2>
     <table id="qMatrix"></table>

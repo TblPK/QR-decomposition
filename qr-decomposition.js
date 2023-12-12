@@ -1,15 +1,17 @@
-function isValidInput(rows, columns) {
-    return !isNaN(rows) && parseInt(rows) > 0 && !isNaN(columns) && parseInt(columns) > 0;
-}
+function isValidInput(n) {
+    return !isNaN(n) && 0 < parseInt(n) && parseInt(n) < 25 && !Number.isInteger(n);
+} 
 
 function generateTable(isRandom) {
     const numRows = document.getElementById('numRows').value;
     const numColumns = document.getElementById('numColumns').value;
+    const errorM = document.getElementById('error');
 
-    if (!isValidInput(numRows, numColumns)) {
-        alert('Please enter a valid positive number for rows and columns.');
+    if (!isValidInput(numRows) || !isValidInput(numColumns)) {
+        errorM.innerHTML = 'Please enter a valid positive number for rows and columns.';
         return;
     }
+    errorM.innerHTML = '';
 
     const table = document.getElementById('inputMatrix');
     table.innerHTML = '';
@@ -29,11 +31,13 @@ function generateTable(isRandom) {
 function performQRDecomposition() {
     const numRows = document.getElementById('numRows').value;
     const numColumns = document.getElementById('numColumns').value;
+    const errorM = document.getElementById('error');
 
-    if (!isValidInput(numRows, numColumns)) {
-        alert('Please enter a valid positive number for rows and columns.');
+    if (!isValidInput(numRows) || !isValidInput(numColumns)) {
+        errorM.innerHTML = 'Please enter a valid positive number for rows and columns.';
         return;
     }
+    errorM.innerHTML = '';
 
     const inputMatrix = [];
     const table = document.getElementById('inputMatrix');
@@ -58,7 +62,7 @@ function QRGivens(matrix, numRows, numColumns) {
     let Q = eye(numRows);
     let R = matrix.map(row => ([...row]));
 
-    for (let j = 0; j < numColumns - 1; j++) {
+    for (let j = 0; j < numColumns; j++) {
         for (let i = numRows - 1; i > j; i--) {
             let G = eye(numRows);
             let { c, s } = givensRotation(R[i - 1][j], R[i][j]);
